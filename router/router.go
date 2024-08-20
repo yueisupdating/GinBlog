@@ -13,8 +13,8 @@ func InitRouter() {
 
 	// 用户路由接口
 	routerV1.POST("user/add", v1.AddUser)
-	//TODO:删
-	//TODO:改
+	routerV1.DELETE("user/delete/:id", v1.DeleteUser) // 测试时将:id改为具体的id
+	routerV1.PUT("user/update/:id", v1.UpdateUser)
 	routerV1.GET("users", v1.GetUsers)
 
 	engine.Run(utils.HttpPort)

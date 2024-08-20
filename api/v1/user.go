@@ -28,10 +28,27 @@ func AddUser(ctx *gin.Context) {
 }
 
 func DeleteUser(ctx *gin.Context) {
-
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	code := model.DeleteUser(id)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": code,
+		"msg":    errmsg.GetErrMsg(code),
+	})
 }
-func UpdateUser() {
 
+func UpdateUser(ctx *gin.Context) {
+	var user model.User
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	_ = ctx.ShouldBindJSON(&user)
+
+	code := model.CheckUserName(user.UserName)
+	if code == errmsg.SUCCESS {
+		model.EditUser(id, &user)
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": code,
+		"msg":    errmsg.GetErrMsg(code),
+	})
 }
 
 func GetUsers(ctx *gin.Context) {

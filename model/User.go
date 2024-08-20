@@ -46,7 +46,7 @@ func CheckUserName(name string) int {
 */
 
 // 判断用户是否存在
-func IsDeleted(id int) int {
+func IsUserExist(id int) int {
 	var user User
 	db.Where("id=?", id).Find(&user)
 	if user.ID > 0 {
@@ -58,8 +58,8 @@ func IsDeleted(id int) int {
 // 软删除用户
 func DeleteUser(id int) int {
 	var user User
-	if IsDeleted(id) == 0 {
-		return errmsg.ERROR_USERNAME_NOT_EXIST
+	if IsUserExist(id) == 0 {
+		return errmsg.ERROR_USER_NOT_EXIST
 	}
 	err := db.Where("id=?", id).Delete(&user).Error
 	if err != nil {
@@ -71,6 +71,9 @@ func DeleteUser(id int) int {
 // 编辑用户
 func EditUser(id int, data *User) int {
 	var user User
+	if IsUserExist(id) == 0 {
+		return errmsg.ERROR_USER_NOT_EXIST
+	}
 	maps := make(map[string]interface{})
 	maps["username"] = data.UserName
 	maps["role"] = data.Role

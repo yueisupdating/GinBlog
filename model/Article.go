@@ -77,3 +77,25 @@ func GetArticles(pageSize int, pageNum int) ([]Article, int) {
 	}
 	return articles, errmsg.SUCCESS
 }
+
+// 返回分类id下所有文章
+func GetArticleByCategory(id int, pageSize int, pageNum int) (arts []Article, code int, cnt int64) {
+	var articles []Article
+	var total int64
+	res := db.Preload("Category").Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&articles)
+	if res.Error != nil {
+		return nil, errmsg.ERROR_CATE_NOT_EXIST, 0
+	}
+	res.Count(&total)
+	return articles, errmsg.SUCCESS, total
+}
+
+// 单个查询
+func GetArticleByID(id int, pageSize int, pageNum int) (Article, int) {
+	var article Article
+	err := db.Preload("Category").Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&article).Error
+	if err != nil {
+		return article, errmsg.ERROR_Article_NOT_EXIST
+	}
+	return article, errmsg.SUCCESS
+}

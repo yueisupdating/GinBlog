@@ -25,7 +25,8 @@ func InitRouter() {
 	routerV1.POST("article/add", v1.AddArt)
 	routerV1.DELETE("article/delete/:id", v1.DeleteArticle) // 测试时将:id改为具体的id
 	routerV1.PUT("article/update/:id", v1.UpdateArticle)
-	routerV1.GET("articles", v1.GetArticles)
+	routerV1.GET("articles", v1.GetArticles) // 所有文章列表查询
+	routerV1.GET("article/category/:id", v1.GetArticleByCategory)
 
 	engine.Run(utils.HttpPort)
 }

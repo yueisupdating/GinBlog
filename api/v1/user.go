@@ -20,9 +20,9 @@ func AddUser(ctx *gin.Context) {
 	}
 	ctx.JSON(
 		http.StatusOK, gin.H{
-			"status": code,
-			"data":   user,
-			"msg":    errmsg.GetErrMsg(code),
+			"status":  code,
+			"data":    user,
+			"message": errmsg.GetErrMsg(code),
 		},
 	)
 }
@@ -31,8 +31,8 @@ func DeleteUser(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	code := model.DeleteUser(id)
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
 	})
 }
 
@@ -46,8 +46,8 @@ func UpdateUser(ctx *gin.Context) {
 		model.EditUser(id, &user)
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
 	})
 }
 
@@ -64,8 +64,8 @@ func GetUsers(ctx *gin.Context) {
 
 	users, code := model.GetUsers(pageSize, pageNum)
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
-		"data":   users,
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+		"data":    users,
 	})
 }

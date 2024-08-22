@@ -7,8 +7,10 @@ import (
 )
 
 var (
-	AppMode    string
-	HttpPort   string
+	AppMode  string
+	HttpPort string
+	JWTKEY   string
+
 	DbHost     string
 	DbPort     string
 	DbUser     string
@@ -27,6 +29,7 @@ func init() {
 func InitServer(file *ini.File) {
 	AppMode = file.Section("server").Key("AppMode").MustString("debug")
 	HttpPort = file.Section("server").Key("HttpPort").MustString(":3000")
+	JWTKEY = file.Section("server").Key("JWTKEY").MustString("AZ&K4(hjIU")
 }
 func InitDatabase(file *ini.File) {
 	DbPort = file.Section("database").Key("DbPort").MustString("3306")

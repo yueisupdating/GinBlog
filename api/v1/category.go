@@ -18,9 +18,9 @@ func AddCate(ctx *gin.Context) {
 	}
 	ctx.JSON(
 		http.StatusOK, gin.H{
-			"status": code,
-			"data":   cate,
-			"msg":    errmsg.GetErrMsg(code),
+			"status":  code,
+			"data":    cate,
+			"message": errmsg.GetErrMsg(code),
 		},
 	)
 }
@@ -29,8 +29,8 @@ func DeleteCate(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	code := model.DeleteCate(id)
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
 	})
 }
 
@@ -44,8 +44,8 @@ func UpdateCate(ctx *gin.Context) {
 		model.EditCate(id, &cate)
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
 	})
 }
 
@@ -62,8 +62,8 @@ func GetCates(ctx *gin.Context) {
 
 	cates, code := model.GetCates(pageSize, pageNum)
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
-		"data":   cates,
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+		"data":    cates,
 	})
 }

@@ -16,9 +16,9 @@ func AddArt(ctx *gin.Context) {
 
 	ctx.JSON(
 		http.StatusOK, gin.H{
-			"status": code,
-			"data":   article,
-			"msg":    errmsg.GetErrMsg(code),
+			"status":  code,
+			"data":    article,
+			"message": errmsg.GetErrMsg(code),
 		},
 	)
 }
@@ -27,8 +27,8 @@ func DeleteArticle(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	code := model.DeleteArt(id)
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
 	})
 }
 
@@ -39,8 +39,8 @@ func UpdateArticle(ctx *gin.Context) {
 
 	code := model.EditArt(id, &article)
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
 	})
 }
 
@@ -57,9 +57,9 @@ func GetArticles(ctx *gin.Context) {
 
 	articles, code := model.GetArticles(pageSize, pageNum)
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
-		"data":   articles,
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+		"data":    articles,
 	})
 }
 
@@ -75,10 +75,10 @@ func GetArticleByCategory(ctx *gin.Context) {
 	}
 	articles, code, cnt := model.GetArticleByCategory(id, pageSize, pageNum)
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
-		"data":   articles,
-		"num":    cnt,
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+		"data":    articles,
+		"num":     cnt,
 	})
 }
 
@@ -94,8 +94,8 @@ func GetArticleByID(ctx *gin.Context) {
 	}
 	article, code := model.GetArticleByID(id, pageSize, pageNum)
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": code,
-		"msg":    errmsg.GetErrMsg(code),
-		"data":   article,
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+		"data":    article,
 	})
 }

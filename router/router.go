@@ -9,7 +9,9 @@ import (
 )
 
 func InitRouter() {
-	engine := gin.Default()
+	engine := gin.New()
+	engine.Use(gin.Recovery())
+	engine.Use(middleware.Log())
 
 	authV1 := engine.Group("api/v1")
 	authV1.Use(middleware.JwtToken())

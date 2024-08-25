@@ -48,16 +48,25 @@ func EditCate(id int, data *Category) int {
 	return errmsg.SUCCESS
 }
 
-// TODO: 查询分类下所有文章
+// 查询单个分类
+func GetCate(id int) (Category, int) {
+	var cate Category
+	db.Where("id=?", id).First(&cate)
+	if cate.ID <= 0 {
+		return cate, errmsg.ERROR_CATE_NOT_EXIST
+	}
+	return cate, errmsg.SUCCESS
+}
 
 // 返回当前所有分类
-func GetCates(pageSize int, pageNum int) ([]Category, int) {
+func GetCates(pageSize int, pageNum int) ([]Category, int64) {
 	var cates []Category
-	err := db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&cates).Error
+	var total int64
+	err := db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&cates).Count(&total).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, errmsg.ERROR
+		return nil, 0
 	}
-	return cates, errmsg.SUCCESS
+	return cates, total
 }
 
 // 查看分类名是否已存在

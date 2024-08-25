@@ -12,10 +12,10 @@ import (
 )
 
 func Log() gin.HandlerFunc {
-	filePath := "log/log"
+	filePath := "log/"
 
 	logWriter, _ := rotatelogs.New(
-		filePath+" %Y-%m-%d.log",
+		filePath+"%Y-%m-%d.log",
 		rotatelogs.WithMaxAge(7*24*time.Hour),
 		rotatelogs.WithRotationTime(24*time.Hour),
 		rotatelogs.WithLinkName("latest_log.log"),

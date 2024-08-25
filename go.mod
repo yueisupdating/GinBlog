@@ -3,6 +3,7 @@ module ginblog
 go 1.19
 
 require (
+	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible

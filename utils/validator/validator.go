@@ -18,7 +18,7 @@ func Validate(data interface{}) (string, int) {
 	if err != nil {
 		log.Panicln(err)
 	}
-
+	// 原属性名使用其他tag替换
 	validater.RegisterTagNameFunc(func(field reflect.StructField) string {
 		return field.Tag.Get("label")
 	})

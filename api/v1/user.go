@@ -81,10 +81,12 @@ func GetUsers(ctx *gin.Context) {
 		pageNum = 1
 	}
 
-	users, code := model.GetUsers(pageSize, pageNum)
+	users, total := model.GetUsers(pageSize, pageNum)
+	code := errmsg.SUCCESS
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),
 		"data":    users,
+		"total":   total,
 	})
 }

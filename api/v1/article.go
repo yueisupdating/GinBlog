@@ -55,11 +55,13 @@ func GetArticles(ctx *gin.Context) {
 		pageNum = 1
 	}
 
-	articles, code := model.GetArticles(pageSize, pageNum)
+	articles, total := model.GetArticles(pageSize, pageNum)
+	code := errmsg.SUCCESS
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),
 		"data":    articles,
+		"total":   total,
 	})
 }
 
@@ -92,7 +94,7 @@ func GetArticleByID(ctx *gin.Context) {
 	if pageNum == 0 {
 		pageNum = 1
 	}
-	article, code := model.GetArticleByID(id, pageSize, pageNum)
+	article, code := model.GetArticleByID(id)
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),

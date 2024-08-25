@@ -49,6 +49,16 @@ func UpdateCate(ctx *gin.Context) {
 	})
 }
 
+func GetCate(ctx *gin.Context) {
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	cate, code := model.GetCate(id)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+		"data":    cate,
+	})
+}
+
 func GetCates(ctx *gin.Context) {
 	pageSize, _ := strconv.Atoi(ctx.Query("pagesize"))
 	pageNum, _ := strconv.Atoi(ctx.Query("pagenum"))
@@ -60,10 +70,12 @@ func GetCates(ctx *gin.Context) {
 		pageNum = 1
 	}
 
-	cates, code := model.GetCates(pageSize, pageNum)
+	cates, total := model.GetCates(pageSize, pageNum)
+	code := errmsg.SUCCESS
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),
 		"data":    cates,
+		"total":   total,
 	})
 }

@@ -12,6 +12,7 @@ func InitRouter() {
 	engine := gin.New()
 	engine.Use(gin.Recovery())
 	engine.Use(middleware.Log())
+	engine.Use(middleware.Cors())
 
 	authV1 := engine.Group("api/v1")
 	authV1.Use(middleware.JwtToken())
@@ -38,6 +39,7 @@ func InitRouter() {
 
 		routerV1.GET("user", v1.GetUser)
 		routerV1.GET("users", v1.GetUsers)
+		routerV1.GET("category", v1.GetCate)
 		routerV1.GET("categorys", v1.GetCates)
 		routerV1.GET("articles", v1.GetArticles) // 所有文章列表查询
 		routerV1.GET("article/category/:id", v1.GetArticleByCategory)

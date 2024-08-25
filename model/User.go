@@ -13,7 +13,7 @@ type User struct {
 	// 继承model.go, 包括时间戳、ID作主键
 	gorm.Model
 	UserName string `gorm:"column:username;type:varchar(20);not null " json:"username" validate:"required,min=4,max=20" label:"用户名"`
-	Password string `gorm:"column:password;type:varchar(200);not null " json:"password" validate:"required,min=5,max=50" lable:"密码"`
+	Password string `gorm:"column:password;type:varchar(200);not null " json:"password" validate:"required,min=5,max=50" label:"密码"`
 	Role     int    `gorm:"column:role;type:int;DEFAULT:2 " json:"role" validate:"required,gte=2" label:"角色"`
 }
 
@@ -95,13 +95,14 @@ func GetUser(id int) (User, int) {
 }
 
 // 返回当前所有用户列表
-func GetUsers(pageSize int, pageNum int) ([]User, int) {
+func GetUsers(pageSize int, pageNum int) ([]User, int64) {
 	var users []User
-	err := db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&users).Error
+	var total int64
+	err := db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&users).Count(&total).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, errmsg.ERROR
+		return nil, 0
 	}
-	return users, errmsg.SUCCESS
+	return users, total
 }
 
 // Scrypt密码加密

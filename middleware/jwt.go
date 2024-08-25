@@ -25,13 +25,6 @@ type MyClaims struct {
 	jwt.RegisteredClaims
 }
 
-var (
-	ErrTokenExpired     = errors.New("token已过期,请重新登录。")
-	ErrTokenNotValidYet = errors.New("token无效,请重新登录。")
-	ErrTokenMalformed   = errors.New("token不正确,请重新登录。")
-	ErrTokenInvalid     = errors.New("这不是一个token,请重新登录。")
-)
-
 // 生成JWT
 func (j *JWT) GenerateJWT(username string) (string, error) {
 	claims := MyClaims{
@@ -48,20 +41,16 @@ func (j *JWT) GenerateJWT(username string) (string, error) {
 }
 
 // 解析JWT
-func (j *JWT) ParseJwt(tokenString string) error {
+func (j *JWT) ParseJwt(tokenString string) int {
 	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return j.JwtKey, nil
 	})
 	if token.Valid {
-		return nil
-	} else if errors.Is(err, jwt.ErrTokenMalformed) {
-		return ErrTokenMalformed
+		return errmsg.SUCCESS
 	} else if errors.Is(err, jwt.ErrTokenExpired) || errors.Is(err, jwt.ErrTokenNotValidYet) {
-		return ErrTokenExpired
-	} else if errors.Is(err, jwt.ErrTokenSignatureInvalid) {
-		return ErrTokenInvalid
+		return errmsg.ERROR_TOKEN_RUNTIME
 	} else {
-		return ErrTokenNotValidYet
+		return errmsg.ERROR_TOKEN_WRONG
 	}
 }
 
@@ -90,10 +79,9 @@ func JwtToken() gin.HandlerFunc {
 			return
 		}
 		jwt := NewJWT()
-		err := jwt.ParseJwt(tokenSplit[1])
-		if err != nil {
-			if errors.Is(err, ErrTokenExpired) {
-				code := errmsg.ERROR_TOKEN_RUNTIME
+		code = jwt.ParseJwt(tokenSplit[1])
+		if code != errmsg.SUCCESS {
+			if code == errmsg.ERROR_TOKEN_RUNTIME {
 				ctx.JSON(http.StatusOK, gin.H{
 					"status":  code,
 					"message": errmsg.GetErrMsg(code),
@@ -103,8 +91,8 @@ func JwtToken() gin.HandlerFunc {
 				return
 			}
 			ctx.JSON(http.StatusOK, gin.H{
-				"status":  errmsg.ERROR,
-				"message": err.Error(),
+				"status":  code,
+				"message": errmsg.GetErrMsg(code),
 				"data":    nil,
 			})
 			ctx.Abort()

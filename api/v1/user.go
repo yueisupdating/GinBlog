@@ -3,6 +3,7 @@ package v1
 import (
 	"ginblog/model"
 	"ginblog/utils/errmsg"
+	"ginblog/utils/validator"
 	"net/http"
 	"strconv"
 
@@ -13,7 +14,16 @@ func AddUser(ctx *gin.Context) {
 	var user model.User
 	// 将HTTP请求报文中JSON格式的Body数据解析到结构体Struct或字典Map数据结构中
 	_ = ctx.ShouldBindJSON(&user)
-	code := model.CheckUserName(user.UserName)
+	msg, code := validator.Validate(user)
+	if code != errmsg.SUCCESS {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":  code,
+			"message": msg,
+		})
+		ctx.Abort()
+		return
+	}
+	code = model.CheckUserName(user.UserName)
 
 	if code == errmsg.SUCCESS {
 		code = model.CreateUser(&user)
@@ -21,7 +31,6 @@ func AddUser(ctx *gin.Context) {
 	ctx.JSON(
 		http.StatusOK, gin.H{
 			"status":  code,
-			"data":    user,
 			"message": errmsg.GetErrMsg(code),
 		},
 	)
@@ -48,6 +57,16 @@ func UpdateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),
+	})
+}
+
+func GetUser(ctx *gin.Context) {
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	user, code := model.GetUser(id)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+		"data":    user,
 	})
 }
 

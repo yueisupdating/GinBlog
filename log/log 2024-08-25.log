@@ -1,0 +1,1 @@
+time="2024-08-25 22:52:47" level=info Agent=PostmanRuntime-ApipostRuntime/1.1.0 DataSize=66 HostName=Updating Ip="::1" Method=POST Path=/api/v1/user/add SpendTime="0 ms" status=200

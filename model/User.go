@@ -12,9 +12,9 @@ import (
 type User struct {
 	// 继承model.go, 包括时间戳、ID作主键
 	gorm.Model
-	UserName string `gorm:"column:username;type:varchar(20);not null " json:"username"`
-	Password string `gorm:"column:password;type:varchar(200);not null " json:"password"`
-	Role     int    `gorm:"column:role;type:int;not null " json:"role"`
+	UserName string `gorm:"column:username;type:varchar(20);not null " json:"username" validate:"required,min=4,max=20" label:"用户名"`
+	Password string `gorm:"column:password;type:varchar(200);not null " json:"password" validate:"required,min=5,max=50" lable:"密码"`
+	Role     int    `gorm:"column:role;type:int;DEFAULT:2 " json:"role" validate:"required,gte=2" label:"角色"`
 }
 
 // 创建新用户
@@ -84,6 +84,16 @@ func EditUser(id int, data *User) int {
 	return errmsg.SUCCESS
 }
 
+// 查找用户
+func GetUser(id int) (User, int) {
+	var user User
+	db.Where("id=?", id).First(&user)
+	if user.ID <= 0 {
+		return user, errmsg.ERROR_USER_NOT_EXIST
+	}
+	return user, errmsg.SUCCESS
+}
+
 // 返回当前所有用户列表
 func GetUsers(pageSize int, pageNum int) ([]User, int) {
 	var users []User
@@ -110,7 +120,7 @@ func CheckLogin(username string, password string) (User, int) {
 	if user.ID == 0 {
 		return user, errmsg.ERROR_USER_NOT_EXIST
 	}
-	if user.Role != 0 {
+	if user.Role != 1 {
 		return user, errmsg.ERROR_USER_RIGHT_WRONG
 	}
 	if ScryptPassword(password) != user.Password {

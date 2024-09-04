@@ -117,7 +117,7 @@ export default {
     },
     methods: {
         async getUserList() {
-            const { data: res } = await this.$http.get('admin/users', {
+            const { data: res } = await this.$http.get('admin/userList', {
             params: {
               username: this.queryParam.username
             }

@@ -25,7 +25,7 @@ const routes = [
         }
       },
       {
-        path: '/admin/userlist',
+        path: '/admin/userList',
         component: UserList,
         meta: {
           title: '用户列表'

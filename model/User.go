@@ -95,10 +95,11 @@ func GetUser(id int) (User, int) {
 }
 
 // 返回当前所有用户列表
-func GetUsers(pageSize int, pageNum int) ([]User, int64) {
+func GetUsers(username string) ([]User, int64) {
 	var users []User
 	var total int64
-	err := db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&users).Count(&total).Error
+
+	err := db.Select("id,username,role").Where("username LIKE ?", username+"%").Find(&users).Count(&total).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, 0
 	}

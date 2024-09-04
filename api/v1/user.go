@@ -71,17 +71,8 @@ func GetUser(ctx *gin.Context) {
 }
 
 func GetUsers(ctx *gin.Context) {
-	pageSize, _ := strconv.Atoi(ctx.Query("pagesize"))
-	pageNum, _ := strconv.Atoi(ctx.Query("pagenum"))
-
-	if pageSize <= 0 {
-		pageSize = 10
-	}
-	if pageNum == 0 {
-		pageNum = 1
-	}
-
-	users, total := model.GetUsers(pageSize, pageNum)
+	username := ctx.Query("username")
+	users, total := model.GetUsers(username)
 	code := errmsg.SUCCESS
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,

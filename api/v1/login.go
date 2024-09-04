@@ -24,7 +24,7 @@ func Login(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    code,
+		"status":  code,
 		"message": errmsg.GetErrMsg(code),
 		"token":   token,
 	})

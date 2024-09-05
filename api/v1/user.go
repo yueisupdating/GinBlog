@@ -14,6 +14,7 @@ func AddUser(ctx *gin.Context) {
 	var user model.User
 	// 将HTTP请求报文中JSON格式的Body数据解析到结构体Struct或字典Map数据结构中
 	_ = ctx.ShouldBindJSON(&user)
+
 	msg, code := validator.Validate(user)
 	if code != errmsg.SUCCESS {
 		ctx.JSON(http.StatusOK, gin.H{
@@ -50,7 +51,7 @@ func UpdateUser(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	_ = ctx.ShouldBindJSON(&user)
 
-	code := model.CheckUserName(user.UserName)
+	code := model.CheckUserNameForUpdate(user.UserName, id)
 	if code == errmsg.SUCCESS {
 		model.EditUser(id, &user)
 	}

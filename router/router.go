@@ -19,7 +19,7 @@ func InitRouter() {
 	{
 		// 用户路由接口
 		authV1.DELETE("admin/user/delete/:id", v1.DeleteUser) // 测试时将:id改为具体的id
-		authV1.PUT("user/update/:id", v1.UpdateUser)
+		authV1.PUT("admin/user/update/:id", v1.UpdateUser)
 
 		// 分类路由接口
 		authV1.POST("category/add", v1.AddCate)
@@ -35,9 +35,9 @@ func InitRouter() {
 	}
 	routerV1 := engine.Group("api/v1")
 	{
-		routerV1.POST("user/add", v1.AddUser)
+		routerV1.POST("admin/user/add", v1.AddUser)
 
-		routerV1.GET("user", v1.GetUser)
+		routerV1.GET("admin/user/get/:id", v1.GetUser)
 		routerV1.GET("admin/userList", v1.GetUsers)
 		routerV1.GET("category", v1.GetCate)
 		routerV1.GET("categorys", v1.GetCates)

@@ -38,6 +38,16 @@ func CheckUserName(name string) int {
 	return errmsg.SUCCESS
 }
 
+func CheckUserNameForUpdate(name string, id int) int {
+	var user User
+	db.Select("id").Where("username=?", name).First(&user)
+
+	if user.ID > 0 && int(user.ID) != id {
+		return errmsg.ERROR_USERNAME_USED
+	}
+	return errmsg.SUCCESS
+}
+
 /*
 如果你的模型包含了 gorm.DeletedAt字段（该字段也被包含在gorm.Model中），
 那么该模型将会自动获得软删除的能力！

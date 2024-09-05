@@ -1,4 +1,5 @@
 <template>
+  <div>
  <a-card>
     <a-row :gutter="16">
         <a-col :span="12" >
@@ -7,7 +8,7 @@
         </a-col>
 
         <a-col :span="12" >
-            <a-button type="primary">新建用户</a-button>
+            <a-button type="primary" @click="addUserVisible = true">新建用户</a-button>
         </a-col>
     </a-row>
 
@@ -19,7 +20,7 @@
         :pagination="pagination"
 
     >
-        <span slot="role" slot-scope="text,data">{{ data === 1 ? '管理员' : '普通用户' }}</span>
+        <span slot="role" slot-scope="data">{{ data == 1 ? '管理员' : '普通用户' }}</span>
 
         <template slot="action" slot-scope="data">
           <div class="actionSlot">
@@ -27,6 +28,7 @@
               type="primary"
               icon="edit"
               style="margin-right: 15px"
+              @click="editUser(data.ID)"
 
             >编辑</a-button>
             <a-button
@@ -40,8 +42,44 @@
         </template>
 
     </a-table>
-
  </a-card>
+              <!--新增用户按钮-->
+    <a-modal title="新增用户" closeable="true" :visible="addUserVisible" @ok="addUserOk" @cancel="addUserCancel">
+      <a-form-model :model="addFormData" ref="addFormData">
+        <a-form-model-item prop="username" label="请输入用户名">
+          <a-input v-model="addFormData.username"></a-input>
+        </a-form-model-item>
+
+        <a-form-model-item prop="password" label="请输入密码">
+          <a-input-password type="password" v-model="addFormData.password"></a-input-password>
+        </a-form-model-item>
+
+        <a-form-model-item prop="checkpassword" label="请再次输入密码">
+          <a-input-password type="password" v-model="addFormData.checkpassword"></a-input-password>
+        </a-form-model-item>
+
+      </a-form-model>
+    </a-modal>
+
+                  <!--编辑用户按钮-->
+    <a-modal title="编辑用户" closeable="true" :visible="editUserVisible" @ok="editUserOk" @cancel="editUserCancel">
+      <a-form-model :model="editFormData" ref="editFormData">
+        <a-form-model-item prop="username" label="请输入用户名">
+          <a-input v-model="editFormData.username"></a-input>
+        </a-form-model-item>
+
+        <a-form-model-item label="是否为管理员">
+          <a-switch
+            :checked="IsAdmin"
+            checked-children="是"
+            un-checked-children="否"
+            @change="adminChange"
+          />
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
+
+</div>
 </template>
 
 <style scoped>
@@ -82,9 +120,30 @@ const columns = [
 ]
 
 export default {
+    computed: {
+      IsAdmin: function () {
+        if (this.editFormData.role === 1) {
+          return true
+        } else {
+          return false
+        }
+      }
+    },
     data() {
         return {
             columns,
+            editFormData: {
+              username: '',
+              role: 2
+            },
+            addFormData: {
+              username: '',
+              password: '',
+              checkpassword: '',
+              role: 2
+            },
+            editUserVisible: false,
+            addUserVisible: false,
             dataSource: [],
             pagination: {
                 pageSizeOptions: ['1', '2', '5', '10', '20'],
@@ -116,34 +175,80 @@ export default {
         this.getUserList()
     },
     methods: {
+        adminChange(checked) {
+          if (checked) {
+            this.editFormData.role = 1
+          } else {
+            this.editFormData.role = 2
+          }
+        },
+        async editUser(id) {
+          this.editUserVisible = true
+          const { data: res } = await this.$http.get(`admin/user/get/${id}`)
+          this.editFormData = res.data
+          this.editFormData.id = id
+        },
         async getUserList() {
             const { data: res } = await this.$http.get('admin/userList', {
             params: {
               username: this.queryParam.username
             }
-        })
+            })
 
-        if (res.status !== 200) {
-            this.$message.error(res.message)
-        }
-        this.dataSource = res.data
-        this.pagination.total = res.total
-    },
-      deleteUser(id) {
-        this.$confirm({
-          title: '确定要删除该用户吗?',
-          content: '删除后无法恢复',
-          onOk: async() => {
-            const { data: res } = await this.$http.delete(`admin/user/delete/${id}`)
-            if (res.status !== 200) return this.$message.error(res.message)
-            this.$message.success('删除成功')
-            this.getUserList()
-          },
-          onCancel: () => {
-            this.$message.info('已取消删除')
-          }
-      })
-    }
+            if (res.status !== 200) {
+                this.$message.error(res.message)
+            }
+            this.dataSource = res.data
+            this.pagination.total = res.total
+        },
+        deleteUser(id) {
+          this.$confirm({
+            title: '确定要删除该用户吗?',
+            content: '删除后无法恢复',
+            onOk: async() => {
+              const { data: res } = await this.$http.delete(`admin/user/delete/${id}`)
+              if (res.status !== 200) return this.$message.error(res.message)
+              this.$message.success('删除成功')
+              this.getUserList()
+            },
+            onCancel: () => {
+              this.$message.info('已取消删除')
+            }
+        })
+      },
+      async editUserOk() {
+          console.log(this.editFormData)
+          const { data: res } = await this.$http.put(`admin/user/update/${this.editFormData.id}`, {
+            username: this.editFormData.username,
+            role: this.editFormData.role
+          })
+          if (res.status !== 200) return this.$message.error(res.message)
+          this.editUserVisible = false
+          this.$message.success('编辑成功')
+          this.getUserList()
+      },
+      async addUserOk() {
+          console.log(this.addFormData)
+          const { data: res } = await this.$http.post('admin/user/add', {
+            username: this.addFormData.username,
+            password: this.addFormData.password,
+            role: this.addFormData.role
+          })
+          if (res.status !== 200) return this.$message.error(res.message)
+          this.addUserVisible = false
+          this.$message.success('添加成功')
+          this.getUserList()
+      },
+      addUserCancel() {
+        this.$refs.addFormData.resetFields()
+        this.addUserVisible = false
+        this.$message.info('新增用户已取消')
+      },
+      editUserCancel() {
+        this.$refs.editFormData.resetFields()
+        this.editUserVisible = false
+        this.$message.info('编辑已取消')
+      }
 }
 }
 </script>

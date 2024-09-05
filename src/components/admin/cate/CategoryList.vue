@@ -30,7 +30,6 @@
               style="margin-right: 15px"
               @click="deletecate(data.ID)"
             >删除</a-button>
-            <a-button type="info" icon="info">修改密码</a-button>
           </div>
         </template>
 

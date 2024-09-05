@@ -6,6 +6,7 @@ import Admin from '../views/Admin.vue'
 import Index from '../components/admin/index.vue'
 import UserList from '../components/admin/user/UserList.vue'
 import CategoryList from '../components/admin/cate/CategoryList.vue'
+import ArticleList from '../components/admin/article/ArticleList.vue'
 
 Vue.use(VueRouter)
 
@@ -37,6 +38,13 @@ const routes = [
         component: CategoryList,
         meta: {
           title: '分类列表'
+        }
+      },
+      {
+        path: '/admin/articleList',
+        component: ArticleList,
+        meta: {
+          title: '文章列表'
         }
       }
     ]

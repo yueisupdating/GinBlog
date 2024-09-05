@@ -44,8 +44,9 @@
     </a-table>
  </a-card>
               <!--新增用户按钮-->
-    <a-modal title="新增用户" closeable="true" :visible="addUserVisible" @ok="addUserOk" @cancel="addUserCancel">
-      <a-form-model :model="addFormData" ref="addFormData">
+    <a-modal title="新增用户" closeable="true" :visible="addUserVisible"
+      @ok="addUserOk" @cancel="addUserCancel" destroyOnClose>
+      <a-form-model :model="addFormData" ref="addFormData" :rules="addUserRules">
         <a-form-model-item prop="username" label="请输入用户名">
           <a-input v-model="addFormData.username"></a-input>
         </a-form-model-item>
@@ -62,8 +63,8 @@
     </a-modal>
 
                   <!--编辑用户按钮-->
-    <a-modal title="编辑用户" closeable="true" :visible="editUserVisible" @ok="editUserOk" @cancel="editUserCancel">
-      <a-form-model :model="editFormData" ref="editFormData">
+    <a-modal title="编辑用户" closeable="true" :visible="editUserVisible" @ok="editUserOk" @cancel="editUserCancel" destroyOnClose>
+      <a-form-model :model="editFormData" ref="editFormData" :rules="editUserRules">
         <a-form-model-item prop="username" label="请输入用户名">
           <a-input v-model="editFormData.username"></a-input>
         </a-form-model-item>
@@ -165,9 +166,57 @@ export default {
                   this.getUserList()
                 }
             },
-
+            editUserRules: {
+              username: [
+              { required: true, message: '请输入用户名', trigger: 'blur' },
+              {
+                min: 4,
+                max: 20,
+                message: '用户名必须在4到20个字符之间',
+                trigger: 'blur'
+              }
+            ]
+            },
             queryParam: {
                 username: ''
+            },
+            addUserRules: {
+              username: [
+              { required: true, message: '请输入用户名', trigger: 'blur' },
+              {
+                min: 4,
+                max: 20,
+                message: '用户名必须在4到20个字符之间',
+                trigger: 'blur'
+              }
+            ],
+            password: [
+              { required: true, message: '请输入密码', trigger: 'blur' },
+              {
+                min: 5,
+                max: 50,
+                message: '密码必须在5到50个字符之间',
+                trigger: 'blur'
+              }
+            ],
+            checkpassword: [
+              { required: true, message: '请再一次输入密码', trigger: 'blur' },
+              {
+                validator: (rule, value, callback) => {
+                  /*
+                  if (this.addFormData.checkpassword === '') {
+                    callback(new Error())
+                  }
+                  */
+                  if (this.addFormData.password !== this.addFormData.checkpassword) {
+                    callback(new Error('密码不一致，请重新输入'))
+                  } else {
+                    callback()
+                  }
+                },
+                trigger: 'blur'
+              }
+              ]
             }
         }
     },
@@ -217,7 +266,8 @@ export default {
         })
       },
       async editUserOk() {
-          console.log(this.editFormData)
+        this.$refs.editFormData.validate(async (valid) => {
+        if (!valid) return this.$message.error('参数不符合要求，请重新输入')
           const { data: res } = await this.$http.put(`admin/user/update/${this.editFormData.id}`, {
             username: this.editFormData.username,
             role: this.editFormData.role
@@ -226,9 +276,11 @@ export default {
           this.editUserVisible = false
           this.$message.success('编辑成功')
           this.getUserList()
-      },
+        })
+        },
       async addUserOk() {
-          console.log(this.addFormData)
+        this.$refs.addFormData.validate(async (valid) => {
+        if (!valid) return this.$message.error('参数不符合要求，请重新输入')
           const { data: res } = await this.$http.post('admin/user/add', {
             username: this.addFormData.username,
             password: this.addFormData.password,
@@ -238,6 +290,7 @@ export default {
           this.addUserVisible = false
           this.$message.success('添加成功')
           this.getUserList()
+        })
       },
       addUserCancel() {
         this.$refs.addFormData.resetFields()

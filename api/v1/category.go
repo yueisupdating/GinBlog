@@ -39,7 +39,7 @@ func UpdateCate(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	_ = ctx.ShouldBindJSON(&cate)
 
-	code := model.CheckCateName(cate.CategoryName)
+	code := model.CheckCateNameForUpdate(cate.CategoryName, int(cate.ID))
 	if code == errmsg.SUCCESS {
 		model.EditCate(id, &cate)
 	}
@@ -60,17 +60,7 @@ func GetCate(ctx *gin.Context) {
 }
 
 func GetCates(ctx *gin.Context) {
-	pageSize, _ := strconv.Atoi(ctx.Query("pagesize"))
-	pageNum, _ := strconv.Atoi(ctx.Query("pagenum"))
-
-	if pageSize <= 0 {
-		pageSize = 10
-	}
-	if pageNum == 0 {
-		pageNum = 1
-	}
-
-	cates, total := model.GetCates(pageSize, pageNum)
+	cates, total := model.GetCates()
 	code := errmsg.SUCCESS
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,

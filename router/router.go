@@ -22,9 +22,9 @@ func InitRouter() {
 		authV1.PUT("admin/user/update/:id", v1.UpdateUser)
 
 		// 分类路由接口
-		authV1.POST("category/add", v1.AddCate)
-		authV1.DELETE("category/delete/:id", v1.DeleteCate) // 测试时将:id改为具体的id
-		authV1.PUT("category/update/:id", v1.UpdateCate)
+		authV1.POST("admin/cate/add", v1.AddCate)
+		authV1.DELETE("admin/cate/delete/:id", v1.DeleteCate) // 测试时将:id改为具体的id
+		authV1.PUT("admin/cate/update/:id", v1.UpdateCate)
 
 		// 文章路由接口
 		authV1.POST("article/add", v1.AddArt)
@@ -39,8 +39,8 @@ func InitRouter() {
 
 		routerV1.GET("admin/user/get/:id", v1.GetUser)
 		routerV1.GET("admin/userList", v1.GetUsers)
-		routerV1.GET("category", v1.GetCate)
-		routerV1.GET("categorys", v1.GetCates)
+		routerV1.GET("admin/cate/get/:id", v1.GetCate)
+		routerV1.GET("admin/cateList", v1.GetCates)
 		routerV1.GET("articles", v1.GetArticles) // 所有文章列表查询
 		routerV1.GET("article/category/:id", v1.GetArticleByCategory)
 		// 登录路由接口

@@ -17,6 +17,7 @@ const (
 	// 分类模块
 	ERROR_CATENAME_USED  = 701
 	ERROR_CATE_NOT_EXIST = 702
+	ERROR_CATE_REPEAT    = 703
 
 	// 文章模块
 	ERROR_Article_NOT_EXIST = 801
@@ -36,6 +37,7 @@ var errorMsg = map[int]string{
 	ERROR_TOKEN_WRONG:       "TOKEN不正确",
 	ERROR_TOKEN_TYPE_WRONG:  "TOKEN格式错误",
 	ERROR_USER_RIGHT_WRONG:  "该用户不存在该权限",
+	ERROR_CATE_REPEAT:       "分类名未修改",
 }
 
 func GetErrMsg(code int) string {

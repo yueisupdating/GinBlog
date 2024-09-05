@@ -7,7 +7,7 @@ import (
 )
 
 type Category struct {
-	ID           uint   `gorm:"column:id;primary_key;auto_increment" json:"id"`
+	gorm.Model
 	CategoryName string `gorm:"column:categoryname;type:varchar(20);not null" json:"categoryname"`
 }
 
@@ -59,10 +59,10 @@ func GetCate(id int) (Category, int) {
 }
 
 // 返回当前所有分类
-func GetCates(pageSize int, pageNum int) ([]Category, int64) {
+func GetCates() ([]Category, int64) {
 	var cates []Category
 	var total int64
-	err := db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&cates).Count(&total).Error
+	err := db.Find(&cates).Count(&total).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, 0
 	}
@@ -74,6 +74,18 @@ func CheckCateName(name string) int {
 	var cate Category
 	db.Select("id").Where("categoryname=?", name).First(&cate)
 	if cate.ID > 0 {
+		return errmsg.ERROR_CATENAME_USED
+	}
+	return errmsg.SUCCESS
+}
+
+func CheckCateNameForUpdate(name string, id int) int {
+	var cate Category
+	db.Select("id").Where("categoryname=?", name).First(&cate)
+	if cate.ID > 0 {
+		if int(cate.ID) == id {
+			return errmsg.ERROR_CATE_REPEAT
+		}
 		return errmsg.ERROR_CATENAME_USED
 	}
 	return errmsg.SUCCESS

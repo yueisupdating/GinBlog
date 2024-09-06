@@ -45,17 +45,8 @@ func UpdateArticle(ctx *gin.Context) {
 }
 
 func GetArticles(ctx *gin.Context) {
-	pageSize, _ := strconv.Atoi(ctx.Query("pagesize"))
-	pageNum, _ := strconv.Atoi(ctx.Query("pagenum"))
-
-	if pageSize <= 0 {
-		pageSize = 10
-	}
-	if pageNum == 0 {
-		pageNum = 1
-	}
-
-	articles, total := model.GetArticles(pageSize, pageNum)
+	title := ctx.Query("title")
+	articles, total := model.GetArticles(title)
 	code := errmsg.SUCCESS
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,
@@ -66,38 +57,22 @@ func GetArticles(ctx *gin.Context) {
 }
 
 func GetArticleByCategory(ctx *gin.Context) {
-	pageSize, _ := strconv.Atoi(ctx.Query("pagesize"))
-	pageNum, _ := strconv.Atoi(ctx.Query("pagenum"))
 	id, _ := strconv.Atoi(ctx.Param("id"))
-	if pageSize <= 0 {
-		pageSize = 20
-	}
-	if pageNum == 0 {
-		pageNum = 1
-	}
-	articles, code, cnt := model.GetArticleByCategory(id, pageSize, pageNum)
+	articles, code, cnt := model.GetArticleByCategory(id)
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),
 		"data":    articles,
-		"num":     cnt,
+		"total":   cnt,
 	})
 }
 
 func GetArticleByID(ctx *gin.Context) {
-	pageSize, _ := strconv.Atoi(ctx.Query("pagesize"))
-	pageNum, _ := strconv.Atoi(ctx.Query("pagenum"))
 	id, _ := strconv.Atoi(ctx.Param("id"))
-	if pageSize <= 0 {
-		pageSize = 20
-	}
-	if pageNum == 0 {
-		pageNum = 1
-	}
-	article, code := model.GetArticleByID(id)
+	user, code := model.GetArticleByID(id)
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),
-		"data":    article,
+		"data":    user,
 	})
 }

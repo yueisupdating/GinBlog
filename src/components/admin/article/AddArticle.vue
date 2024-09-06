@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span>    {{id? '编辑文章页面':'新增文章页面'}}</span>
+        <span>    {{userId? '编辑文章页面':'新增文章页面'}}</span>
 
         <a-card>
             <a-form-model :model="formData" ref="formData" :rules="articleRules">
@@ -14,12 +14,12 @@
                 </a-form-model-item>
 
                 <a-form-model-item label="文章分类" prop="cid">
-                    <a-select @change="categoryChange" placeholder="请选择分类">
+                    <a-select @change="categoryChange" placeholder="请选择分类" v-model="formData.cid">
                         <a-select-option
                             v-for="item in cateList"
                             :key="item.ID"
                             :value="item.ID"
-                        >cateChange
+                        >
                         {{item.categoryname}}
                         </a-select-option>
                     </a-select>
@@ -35,7 +35,7 @@
                             <a-icon type="upload"></a-icon>
                             点击上传图片
                         </a-button>
-                            <template v-if="id">
+                            <template v-if="userId">
                                 <img :src="formData.img" style="width: 120px; height: 100px; margin-left: 15px" />
                             </template>
                     </a-upload>
@@ -48,7 +48,7 @@
                 <a-form-model-item class="addButton">
                     <a-button type="primary" style="margin:20px" @click="editArticleOK(formData.id)">
                         {{
-                            id?'更新':'提交'
+                            userId?'更新':'提交'
                         }}
                     </a-button>
                     <a-button type="info" style="margin:20px" @click="resetChange">取消</a-button>
@@ -64,6 +64,11 @@
 import { baseURL } from '../../../plugin/http'
 
 export default {
+    computed: {
+        userId() {
+        return this.$route.params.id
+        }
+    },
     data() {
         return {
             articleRules: {
@@ -89,12 +94,13 @@ export default {
             headers: {}
         }
     },
-    props: ['id'],
+
     created() {
         this.getCateList()
         this.headers = { Authorization: `Bearer ${window.sessionStorage.getItem('token')}` }
-        if (this.id) {
-            this.getArticle(this.id)
+        if (this.userId) {
+            this.getArticle(this.userId)
+            this.formData.id = this.userId
         }
     },
     methods: {
@@ -112,18 +118,17 @@ export default {
             if (info.file.status === 'done') {
                 this.$message.success('图片上传成功')
                 this.formData.img = info.file.response.url
-                console.log(this.formData.img)
             } else if (info.file.status === 'error') {
                 this.$message.error('图片上传失败')
             }
         },
-        async getArticle() {
-            const { data: res } = await this.$http.get(`/admin/article/get/${this.id}`)
+        async getArticle(id) {
+            const { data: res } = await this.$http.get(`/admin/article/get/${id}`)
             if (res.status !== 200) {
                 this.$message.error(res.message)
             }
             this.formData = res.data
-            this.formData.id = this.id
+            this.formData.id = res.data.ID
         },
         resetChange() {
             this.$refs.formData.resetFields()

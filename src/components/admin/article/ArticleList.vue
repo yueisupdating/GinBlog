@@ -7,6 +7,10 @@
             </a-input-search>
         </a-col>
 
+        <a-col :span="12" >
+            <a-button type="primary" @click="$router.push('/admin/article/add')">新建文章</a-button>
+        </a-col>
+
         <a-col :span="8" >
             <a-select placeholder="请选择分类" style="width: 200px" @change="cateChange">
                 <a-select-option
@@ -35,7 +39,7 @@
               type="primary"
               icon="edit"
               style="margin-right: 15px"
-              @click="editArticle(data.ID)"
+              @click="$router.push(`/admin/article/update/${data.ID}`)"
             >编辑</a-button>
             <a-button
               type="danger"
@@ -47,19 +51,6 @@
         </template>
     </a-table>
  </a-card>
-                  <!--编辑文章按钮-->
-    <a-modal title="编辑文章" closeable="true" :visible="editArticleVisible" @ok="editArticleOk" @cancel="editArticleCancel" destroyOnClose>
-      <a-form-model :model="editFormData" ref="editFormData">
-        <a-form-model-item prop="title " label="请修改文章名">
-          <a-input v-model="editFormData.title "></a-input>
-        </a-form-model-item>
-
-        <a-form-model-item prop="description" label="请修改文章描述">
-          <a-input v-model="editFormData.description "></a-input>
-        </a-form-model-item>
-
-      </a-form-model>
-    </a-modal>
 
 </div>
 </template>
@@ -171,13 +162,6 @@ export default {
             }
             this.cateList = res.data
         },
-        async editArticle(id) {
-          this.editArticleVisible = true
-          const { data: res } = await this.$http.get(`admin/article/get/${id}`)
-
-          this.editFormData = res.data
-          this.editFormData.id = id
-        },
         async getArticleList() {
             const { data: res } = await this.$http.get('admin/articleList', {
             params: {
@@ -205,22 +189,6 @@ export default {
               this.$message.info('已取消删除')
             }
         })
-      },
-      async editArticleOk() {
-          const { data: res } = await this.$http.put(`admin/article/update/${this.editFormData.id}`, {
-            title: this.editFormData.title,
-            description: this.editFormData.description,
-            img: this.editFormData.img
-          })
-          if (res.status !== 200) return this.$message.error(res.message)
-          this.editArticleVisible = false
-          this.$message.success('编辑成功')
-          this.getArticleList()
-        },
-      editArticleCancel() {
-        this.$refs.editFormData.resetFields()
-        this.editArticleVisible = false
-        this.$message.info('编辑已取消')
       }
 }
 }

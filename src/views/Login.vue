@@ -96,7 +96,6 @@ export default {
       this.$refs.formData.validate(async (valid) => {
         if (!valid) return this.$message.error('请按要求重新输入')
         const { data: res } = await this.$http.post('login', this.formData)
-        console.log(res)
         if (res.status !== 200) return this.$message.error(res.message)
         window.sessionStorage.setItem('token', res.token)
         this.$router.push('admin/index')

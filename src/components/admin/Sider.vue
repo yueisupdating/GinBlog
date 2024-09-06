@@ -25,7 +25,7 @@
                 <span>文章列表</span>
             </a-menu-item>
 
-            <a-menu-item key="addArticle">
+            <a-menu-item key="article/add">
                 <a-icon type="form" />
                 <span>写文章</span>
             </a-menu-item>

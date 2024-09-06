@@ -23,7 +23,6 @@
 import Footer from '../components/admin/Footer.vue'
 import Header from '../components/admin/Header.vue'
 import Sider from '../components/admin/Sider.vue'
-// import Index from '../components/admin/index.vue'
 
 export default {
     components: {

@@ -7,6 +7,7 @@ import Index from '../components/admin/index.vue'
 import UserList from '../components/admin/user/UserList.vue'
 import CategoryList from '../components/admin/cate/CategoryList.vue'
 import ArticleList from '../components/admin/article/ArticleList.vue'
+import AddArticle from '../components/admin/article/AddArticle.vue'
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,20 @@ const routes = [
         component: ArticleList,
         meta: {
           title: '文章列表'
+        }
+      },
+      {
+        path: '/admin/article/add',
+        component: AddArticle,
+        meta: {
+          title: '新增文章'
+        }
+      },
+      {
+        path: '/admin/article/update/:id',
+        component: AddArticle,
+        meta: {
+          title: '编辑文章'
         }
       }
     ]

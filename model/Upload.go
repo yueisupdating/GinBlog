@@ -36,8 +36,7 @@ func setConfig() storage.Config {
 func UpLoadFile(file multipart.File, fileSize int64) (string, int) {
 	mac := auth.New(utils.AccessKey, utils.SecretKey)
 	putPolicy := storage.PutPolicy{
-		Scope:   utils.Bucket,
-		Expires: 7200,
+		Scope: utils.Bucket,
 	}
 	upToken := putPolicy.UploadToken(mac)
 	cfg := setConfig()
@@ -51,5 +50,5 @@ func UpLoadFile(file multipart.File, fileSize int64) (string, int) {
 		log.Panicln(err)
 		return "", errmsg.ERROR
 	}
-	return utils.QiniuSever + ret.Key, errmsg.SUCCESS
+	return utils.QiniuSever + "/" + ret.Key, errmsg.SUCCESS
 }

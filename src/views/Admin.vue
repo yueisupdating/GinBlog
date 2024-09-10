@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import Footer from '../components/admin/Footer.vue'
-import Header from '../components/admin/Header.vue'
-import Sider from '../components/admin/Sider.vue'
+import Footer from '../components/Footer.vue'
+import Header from '../components/Header.vue'
+import Sider from '../components/Sider.vue'
 
 export default {
     components: {

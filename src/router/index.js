@@ -3,11 +3,12 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Admin from '../views/Admin.vue'
 
-import Index from '../components/admin/index.vue'
-import UserList from '../components/admin/user/UserList.vue'
-import CategoryList from '../components/admin/cate/CategoryList.vue'
-import ArticleList from '../components/admin/article/ArticleList.vue'
-import AddArticle from '../components/admin/article/AddArticle.vue'
+import Index from '../components/index.vue'
+import UserList from '../components/user/UserList.vue'
+import CategoryList from '../components/cate/CategoryList.vue'
+import ArticleList from '../components/article/ArticleList.vue'
+import AddArticle from '../components/article/AddArticle.vue'
+import Profile from '../components/user/Profile.vue'
 
 Vue.use(VueRouter)
 
@@ -60,6 +61,13 @@ const routes = [
         component: AddArticle,
         meta: {
           title: '编辑文章'
+        }
+      },
+      {
+        path: '/admin/profile',
+        component: Profile,
+        meta: {
+          title: '用户信息管理'
         }
       }
     ]

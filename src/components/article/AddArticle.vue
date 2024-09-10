@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { baseURL } from '../../../plugin/http'
+import { baseURL } from '../../plugin/http'
 
 export default {
     computed: {

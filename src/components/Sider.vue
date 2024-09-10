@@ -31,6 +31,10 @@
             </a-menu-item>
 
         </a-sub-menu>
+        <a-menu-item key="profile">
+            <a-icon type="profile"/>
+            <span>用户信息管理</span>
+        </a-menu-item>
     </a-menu>
 </template>
 
@@ -39,7 +43,7 @@ export default {
     methods: {
         goToPage(e) {
             this.$router.push('/admin/' + e.key).catch((err) => {
-                console.log(err)
+            console.log(err)
             })
         }
     }

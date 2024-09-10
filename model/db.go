@@ -32,8 +32,6 @@ func InitDb() {
 		utils.DbName,
 	)
 
-	fmt.Println(dns)
-
 	db, err = gorm.Open(mysql.Open(dns), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 		// 外键约束
@@ -50,7 +48,7 @@ func InitDb() {
 		os.Exit(1)
 	}
 	// gorm自动建表
-	db.AutoMigrate(&User{}, &Article{}, &Category{})
+	db.AutoMigrate(&User{}, &Article{}, &Category{}, &Profile{})
 	sqlDB, _ := db.DB()
 	// 设置mysql连接池
 	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.

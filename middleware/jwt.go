@@ -41,17 +41,20 @@ func (j *JWT) GenerateJWT(username string) (string, error) {
 }
 
 // 解析JWT
-func (j *JWT) ParseJwt(tokenString string) int {
-	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
+func (j *JWT) ParseJwt(tokenString string) (*MyClaims, int) {
+	var jwtClaim = &MyClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, jwtClaim, func(token *jwt.Token) (interface{}, error) {
 		return j.JwtKey, nil
 	})
+
 	if token.Valid {
-		return errmsg.SUCCESS
+		return jwtClaim, errmsg.SUCCESS
 	} else if errors.Is(err, jwt.ErrTokenExpired) || errors.Is(err, jwt.ErrTokenNotValidYet) {
-		return errmsg.ERROR_TOKEN_RUNTIME
+		return nil, errmsg.ERROR_TOKEN_RUNTIME
 	} else {
-		return errmsg.ERROR_TOKEN_WRONG
+		return nil, errmsg.ERROR_TOKEN_WRONG
 	}
+
 }
 
 func JwtToken() gin.HandlerFunc {
@@ -79,7 +82,8 @@ func JwtToken() gin.HandlerFunc {
 			return
 		}
 		jwt := NewJWT()
-		code = jwt.ParseJwt(tokenSplit[1])
+		_, code = jwt.ParseJwt(tokenSplit[1])
+
 		if code != errmsg.SUCCESS {
 			if code == errmsg.ERROR_TOKEN_RUNTIME {
 				ctx.JSON(http.StatusOK, gin.H{

@@ -2,12 +2,12 @@
   <div>
  <a-card>
     <a-row :gutter="16">
-        <a-col :span="12" >
+        <a-col :span="8" >
             <a-input-search placeholder="输入要查询的文章题目" enter-button allowClear v-model="queryParam.title " @search="getArticleList">
             </a-input-search>
         </a-col>
 
-        <a-col :span="12" >
+        <a-col :span="8" >
             <a-button type="primary" @click="$router.push('/admin/article/add')">新建文章</a-button>
         </a-col>
 
@@ -136,7 +136,9 @@ export default {
                 }
             },
             queryParam: {
-                title: ''
+                title: '',
+                pagesize: 5,
+                pagenum: 1
             }
         }
     },
@@ -146,7 +148,9 @@ export default {
     },
     methods: {
         async cateChange(id) {
-            const { data: res } = await this.$http.get(`admin/article/category/${id}`)
+            const { data: res } = await this.$http.get(`admin/article/category/${id}`, {
+              params: { pagesize: this.queryParam.pagesize, pagenum: this.queryParam.pagenum }
+            })
 
             if (res.status !== 200) {
                 this.$message.error(res.message)

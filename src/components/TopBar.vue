@@ -1,10 +1,12 @@
 <template>
     <div>
         <v-app-bar app color="indigo">
-            <v-avatar color="grey"></v-avatar>
+            <v-avatar color="grey">
+                <img :src=topUrl alt />
+            </v-avatar>
             <v-container>
                 <v-btn text color="white" @click="$router.push('/')">首页</v-btn>
-                <v-btn v-for="item in cateList" :key="item.id" text color="white">
+                <v-btn v-for="item in cateList" :key="item.id" text color="white" @click="$router.push(`category/${item.ID}`)">
                     {{ item.categoryname }}</v-btn>
             </v-container>
 
@@ -19,6 +21,9 @@
                 rounded
                 placeholder="请输入文章标题查找"
                 dark
+                append-icon="mdi-text-search"
+                v-model="searchName"
+                @change="searchTitle(searchName)"
                 ></v-text-field>
             </v-responsive>
         </v-app-bar>
@@ -32,7 +37,9 @@ export default {
     },
     data() {
         return {
-            cateList: []
+            topUrl: 'http://sir7pml1w.hb-bkt.clouddn.com/Fme4x8WOm2CimAdS5Phk3bUKzAl4',
+            cateList: [],
+            searchName: ''
         }
     },
     methods: {
@@ -41,7 +48,13 @@ export default {
             if (res.status === 200) {
                 this.cateList = res.data
             }
-            console.log(res)
+        },
+        searchTitle(title) {
+            if (title.length === 0) {
+                this.$router.push('/')
+                return
+            }
+            this.$router.push(`/search/${title}`)
         }
     }
 }

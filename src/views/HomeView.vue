@@ -11,7 +11,7 @@
             </v-col >
 
             <v-col cols="3">
-              <v-sheet min-height="80vh" rounded="lg" min-width="120vh">
+              <v-sheet min-height="80vh" rounded="lg" min-width="145vh">
                 <router-view :key="$route.path"></router-view>
               </v-sheet>
             </v-col>

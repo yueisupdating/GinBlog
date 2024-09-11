@@ -1,6 +1,6 @@
 <template>
-    <v-col>
-        <v-card v-for="item in artList" :key="item.id" @click="$router.push(`detail/${item.ID}`)">
+        <v-col>
+        <v-card v-for="item in artList" :key="item.id" @click="$router.push(`/detail/${item.ID}`)">
             <v-row>
                 <v-col cols="1">
                     <v-img :src="item.img" max-height="120" max-width="120"></v-img>
@@ -22,7 +22,7 @@
         </v-card>
 
         <div style="margin: 20px;">
-            <v-pagination v-model="queryParams.pagenum" :length="Math.ceil(total/queryParams.pagesize)"  total-visible="5" @input="getArtList()">
+            <v-pagination v-model="queryParam.pagenum" :length="Math.ceil(total/queryParam.pagesize)"  total-visible="5" @input="getArtList()">
             </v-pagination>
         </div>
     </v-col>
@@ -30,32 +30,37 @@
 
 <script>
 export default {
-    data() {
-        return {
-            artList: [],
-            total: 0,
-            queryParams: {
-                pagesize: 3,
-                pagenum: 1
-            }
-        }
-    },
-    created() {
-        this.getArtList()
-    },
-    methods: {
-        async getArtList() {
-            // routerV1.GET("admin/get/articleList", v1.GetArt)
-            const { data: res } = await this.$http.get('admin/get/articleList', {
-            params: {
-                pagesize: this.queryParams.pagesize,
-                pagenum: this.queryParams.pagenum
-            }
-            })
-            this.artList = res.data
-            this.total = res.total
-        }
+  data() {
+    return {
+      artList: [],
+      queryParam: {
+        pagesize: 3,
+        pagenum: 1
+      },
+      total: 0,
+      id: this.$route.params.id
     }
+  },
+  created() {
+    this.getArtList()
+  },
+  methods: {
+    // 获取文章列表
+    async getArtList() {
+      const { data: res } = await this.$http.get(`admin/article/category/${this.id}`,
+        {
+          params: {
+            id: this.id,
+            pagesize: this.queryParam.pagesize,
+            pagenum: this.queryParam.pagenum
+          }
+
+        }
+      )
+      this.artList = res.data
+      this.total = res.total
+    }
+  }
 }
 </script>
 

@@ -9,7 +9,7 @@ import (
 
 type Article struct {
 	gorm.Model
-	Category    Category `gorm:"foreignKey:Cid"`
+	Category    Category `gorm:"foreignKey:Cid;references:ID"`
 	Title       string   `gorm:"column:title;type:varchar(20);not null" json:"title"`
 	Description string   `gorm:"column:description;type:varchar(200)" json:"description"`
 	Content     string   `gorm:"column:content;type:longtext" json:"content"`
@@ -23,6 +23,7 @@ func CreateArticle(art *Article) int {
 	if err != nil {
 		return errmsg.ERROR
 	}
+	db.Preload("Category").First(&art, art.ID)
 	return errmsg.SUCCESS
 }
 
@@ -69,12 +70,25 @@ func EditArt(id int, data *Article) int {
 	return errmsg.SUCCESS
 }
 
+func GetArt(title string, pageSize int, pageNum int) ([]Article, int, int64) {
+	var articleList []Article
+	var total int64
+	err := db.Preload("Category").Order("Created_At DESC").Where("title LIKE ?", title+"%").Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&articleList).Error
+
+	db.Model(&articleList).Where("title LIKE ?", title+"%").Count(&total)
+
+	if err != nil {
+		return nil, errmsg.ERROR, 0
+	}
+	return articleList, errmsg.SUCCESS, total
+}
+
 // 返回当前所有文章列表
 func GetArticles(title string) ([]Article, int64) {
 	var articles []Article
 	var total int64
 
-	err := db.Preload("Category").Select("id,title,description,img,content").Where("title LIKE ?", title+"%").Find(&articles).Count(&total).Error
+	err := db.Preload("Category").Where("title LIKE ?", title+"%").Find(&articles).Count(&total).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, 0
 	}
@@ -96,10 +110,12 @@ func GetArticleByID(id int) (Article, int) {
 }
 
 // 返回分类id下所有文章
-func GetArticleByCategory(id int) (arts []Article, code int, cnt int64) {
+func GetArticleByCategory(id int, pageSize int, pageNum int) (arts []Article, code int, cnt int64) {
 	var articles []Article
 	var total int64
-	err := db.Preload("Category").Where("cid=?", id).Find(&articles).Count(&total).Error
+	err = db.Preload("Category").Limit(pageSize).Offset((pageNum-1)*pageSize).Where(
+		"cid =?", id).Find(&articles).Error
+	db.Model(&articles).Where("cid =?", id).Count(&total)
 	if err != nil {
 		return nil, errmsg.ERROR_CATE_NOT_EXIST, 0
 	}

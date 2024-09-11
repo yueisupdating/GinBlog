@@ -43,6 +43,8 @@ func InitRouter() {
 		routerV1.GET("admin/userList", v1.GetUsers)
 		routerV1.GET("admin/cateList", v1.GetCates)
 		routerV1.GET("admin/articleList", v1.GetArticles) // 所有文章列表查询
+		routerV1.GET("admin/get/articleList", v1.GetArt)
+
 		routerV1.GET("admin/profile/get/:id", v1.GetProfile)
 		routerV1.GET("admin/user/get/:id", v1.GetUser)
 		routerV1.GET("admin/cate/get/:id", v1.GetCate)

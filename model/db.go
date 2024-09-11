@@ -35,7 +35,7 @@ func InitDb() {
 	db, err = gorm.Open(mysql.Open(dns), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 		// 外键约束
-		DisableForeignKeyConstraintWhenMigrating: true,
+		DisableForeignKeyConstraintWhenMigrating: false,
 		// 禁用默认事务（提高运行速度）
 		SkipDefaultTransaction: true,
 		NamingStrategy: schema.NamingStrategy{

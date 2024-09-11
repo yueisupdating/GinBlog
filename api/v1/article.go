@@ -56,14 +56,54 @@ func GetArticles(ctx *gin.Context) {
 	})
 }
 
-func GetArticleByCategory(ctx *gin.Context) {
-	id, _ := strconv.Atoi(ctx.Param("id"))
-	articles, code, cnt := model.GetArticleByCategory(id)
-	ctx.JSON(http.StatusOK, gin.H{
+func GetArt(c *gin.Context) {
+	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
+	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
+	title := c.Query("title")
+
+	switch {
+	case pageSize >= 100:
+		pageSize = 100
+	case pageSize <= 0:
+		pageSize = 10
+	}
+
+	if pageNum == 0 {
+		pageNum = 1
+	}
+
+	data, code, total := model.GetArt(title, pageSize, pageNum)
+	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
+		"data":    data,
+		"total":   total,
 		"message": errmsg.GetErrMsg(code),
-		"data":    articles,
-		"total":   cnt,
+	})
+}
+
+func GetArticleByCategory(c *gin.Context) {
+	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
+	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	switch {
+	case pageSize >= 100:
+		pageSize = 100
+	case pageSize <= 0:
+		pageSize = 10
+	}
+
+	if pageNum == 0 {
+		pageNum = 1
+	}
+
+	data, code, total := model.GetArticleByCategory(id, pageSize, pageNum)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"data":    data,
+		"total":   total,
+		"message": errmsg.GetErrMsg(code),
 	})
 }
 

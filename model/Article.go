@@ -3,6 +3,7 @@ package model
 import (
 	"ginblog/utils/errmsg"
 	"log"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -15,6 +16,7 @@ type Article struct {
 	Content     string   `gorm:"column:content;type:longtext" json:"content"`
 	Cid         int      `gorm:"column:cid;type:int" json:"cid"`
 	Img         string   `gorm:"column:img;type:varchar(200)" json:"img"`
+	ViewCount   int      `gorm:"column:viewCount;type:int;default:0" json:"viewCount"`
 }
 
 // 创建新文章
@@ -68,6 +70,23 @@ func EditArt(id int, data *Article) int {
 		return errmsg.ERROR
 	}
 	return errmsg.SUCCESS
+}
+
+func GetArtRank(idList []string, pageSize int, pageNum int) ([]Article, int, int64) {
+	var articleList []Article
+	var idLists []int
+
+	total := len(idList)
+	for i := 0; i < total; i++ {
+		idTmp, _ := strconv.Atoi(idList[i])
+		idLists = append(idLists, idTmp)
+	}
+	err = db.Preload("Category").Where("id IN ?", idLists).Find(&articleList).Error
+
+	if err != nil {
+		return nil, errmsg.ERROR, 0
+	}
+	return articleList, errmsg.SUCCESS, int64(total)
 }
 
 func GetArt(title string, pageSize int, pageNum int) ([]Article, int, int64) {

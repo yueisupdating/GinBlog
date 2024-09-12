@@ -42,14 +42,20 @@ func InitRouter() {
 
 		routerV1.GET("admin/userList", v1.GetUsers)
 		routerV1.GET("admin/cateList", v1.GetCates)
-		routerV1.GET("admin/articleList", v1.GetArticles) // 所有文章列表查询
+		routerV1.GET("admin/articleList", v1.GetArticles)
 		routerV1.GET("admin/get/articleList", v1.GetArt)
+		routerV1.GET("admin/rank/articleList", v1.GetArtRank)
 
 		routerV1.GET("admin/profile/get/:id", v1.GetProfile)
 		routerV1.GET("admin/user/get/:id", v1.GetUser)
 		routerV1.GET("admin/cate/get/:id", v1.GetCate)
 		routerV1.GET("admin/article/get/:id", v1.GetArticleByID)
 		routerV1.GET("admin/article/category/:id", v1.GetArticleByCategory)
+	}
+	redisV1 := engine.Group("api/v1")
+	{
+		redisV1.GET("viewCount/incr/:id", v1.IncrViewCount)
+		redisV1.GET("viewCount/get/:id", v1.GetViewCount)
 	}
 	engine.Run(utils.HttpPort)
 }

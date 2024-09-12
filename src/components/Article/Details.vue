@@ -26,6 +26,7 @@ export default {
     },
     created() {
         this.getArticleData()
+        this.$http.get(`viewCount/incr/${this.id}`)
     }
 }
 </script>

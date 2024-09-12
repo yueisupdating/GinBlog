@@ -6,9 +6,13 @@
             </v-avatar>
             <v-container>
                 <v-btn text color="white" @click="$router.push('/')">首页</v-btn>
-                <v-btn v-for="item in cateList" :key="item.id" text color="white" @click="$router.push(`category/${item.ID}`)">
+                <v-btn v-for="item in cateList" :key="item.id" text color="white" @click="$router.push(`/category/${item.ID}`)">
                     {{ item.categoryname }}</v-btn>
             </v-container>
+
+            <v-spacer></v-spacer>
+
+            <v-btn icon color="white" text @click="$router.push(`/rank`)">排行榜</v-btn>
 
             <v-spacer></v-spacer>
 

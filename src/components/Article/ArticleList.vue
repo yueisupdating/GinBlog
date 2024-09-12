@@ -14,8 +14,11 @@
                     <v-card-subtitle>{{item.description}}</v-card-subtitle>
                     <v-divider></v-divider>
                     <v-card-text>
-                        <v-icon>{{'mdi-calendar-month'}}</v-icon>
-                        <span>{{item.CreatedAt | dateformat("YYYY-MM-DD HH:MM")}}</span>
+                        <v-icon >{{'mdi-calendar-month'}}</v-icon>
+                        <span style="margin-right: 20px;">{{item.CreatedAt | dateformat("YYYY-MM-DD HH:MM")}}</span>
+
+                        <v-icon>{{'mdi-eye'}}</v-icon>
+                        <span style="margin-right: 20px;">{{item.viewCount}}</span>
                     </v-card-text>
                 </v-col>
             </v-row>
@@ -45,7 +48,6 @@ export default {
     },
     methods: {
         async getArtList() {
-            // routerV1.GET("admin/get/articleList", v1.GetArt)
             const { data: res } = await this.$http.get('admin/get/articleList', {
             params: {
                 pagesize: this.queryParams.pagesize,

@@ -15,7 +15,7 @@
                     <v-divider></v-divider>
                     <v-card-text>
                         <v-icon>{{'mdi-calendar-month'}}</v-icon>
-                        <span style="margin-right: 20px;">{{item.CreatedAt | dateformat("YYYY-MM-DD HH:MM")}}</span>
+                        <span style="margin-right: 20px;"> {{item.CreatedAt | dateformat("YYYY-MM-DD HH:MM")}}</span>
 
                         <v-icon>{{'mdi-eye'}}</v-icon>
                         <span style="margin-right: 20px;">{{item.viewCount}}</span>
@@ -50,7 +50,7 @@ export default {
   methods: {
     // 获取文章列表
     async getArtList() {
-      const { data: res } = await this.$http.get('admin/get/articleList',
+      const { data: res } = await this.$http.get('admin/rank/articleList',
         {
           params: {
             title: this.title,
@@ -67,5 +67,4 @@ export default {
 </script>
 
 <style>
-
 </style>

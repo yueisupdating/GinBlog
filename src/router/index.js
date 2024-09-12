@@ -5,6 +5,7 @@ import ArticleList from '../components/Article/ArticleList.vue'
 import Details from '../components/Article/Details.vue'
 import Search from '../components/Article/Search.vue'
 import CateArt from '../components/Article/CateArt.vue'
+import Rank from '../components/Article/Rank.vue'
 
 Vue.use(VueRouter)
 
@@ -19,8 +20,8 @@ const routes = [
         component: ArticleList
       },
       {
-        path: '/detail/:id',
-        component: Details
+        path: '/rank',
+        component: Rank
       },
       {
         path: '/search/:title',
@@ -29,6 +30,10 @@ const routes = [
       {
         path: '/category/:id',
         component: CateArt
+      },
+      {
+        path: '/detail/:id',
+        component: Details
       }
     ]
   }
